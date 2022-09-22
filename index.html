@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@2"></script>
+  <title>Consumo de API</title>
+</head>
+
+<body class="bg-slate-800">
+  <div id="app" class="w-11/12 mx-auto p-10">
+
+    <div class="flex justify-center">
+      <button
+        @click="carregarUsuarios"
+        :disabled="carregando"
+        class="w-60 h-12 flex items-center justify-center bg-yellow-300 text-slate-800 font-medium rounded-md"
+      >
+        <svg v-if="carregando"  class="animate-spin ml-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+
+        <span v-else class="text-lg font-bold">
+          Carregar usuários
+        </span>
+      </button>
+    </div>
+
+    <table class="mt-10 w-max mx-auto">
+      <tr class="border-slate-600 border-solid border text-purple-400">
+        <th class="px-4 py-3 text-left">Nome</th>
+        <th class="px-4 py-3 text-left">Email</th>
+        <th class="px-4 py-3 text-left">Telefone</th>
+        <th class="px-4 py-3 text-left">Site</th>
+      </tr>
+
+      <tr
+        v-for="usuario in usuarios"
+        :key="usuario.id"
+        class="border-slate-600 border-solid border text-emerald-300"
+      >
+        <td class="px-4 py-3">{{ usuario.name }}</td>
+        <td class="px-4 py-3">{{ usuario.email }}</td>
+        <td class="px-4 py-3">{{ usuario.phone }}</td>
+        <td class="px-4 py-3">{{ usuario.website }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: () => ({
+        carregando: false,
+        usuarios: [],
+        mensagem: ''
+      }),
+      methods: {
+        async carregarUsuarios() {
+          this.carregando = true
+          this.usuarios = await axios.get('https://jsonplaceholder.typicode.com/users')
+            .then(response => response.data)
+            .finally(() => this.carregando = false);
+        }
+      }
+    })
+  </script>
+</body>
+</html>
